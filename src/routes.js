@@ -32,5 +32,7 @@ router.get('/get/maincategories', CategoriesController.CategoriesList);
 router.post('/get/coupons/details', InnerStore.getCouponsList);
 router.post('/post/coupon/code', InnerStore.postCouponsCode);
 router.post('/check_coupon_validity', InnerStore.checkCouponValidity);
+// to check server working or not
+router.get('/endpoint/check', InnerStore.checkServerWorks);
 
 module.exports = router;

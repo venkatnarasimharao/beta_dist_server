@@ -49,6 +49,7 @@ module.exports.CategoriesList = async (request, response) => {
 }
 
 module.exports.onlinestoredata = async (request, response) => {
+    console.log('hitting onlinestoredata')
     const api_url = 'http://tools.vcommission.com/api/coupons.php?apikey=fe75ea1da8abe0780cffb2fa5744790b7b0dbc64312789e7521192ecb6e17c64'
     await axios.get(api_url)
         .then(result => {

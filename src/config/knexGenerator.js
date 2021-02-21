@@ -6,8 +6,8 @@ const DatabaseCredentials = {
     connection: {
         host: "localhost",
         user: "root",
-        password: "",
-        database: "bacatastore",
+        password: "BaCaTa@2020",
+        database: "bacata_uat",
         charset: "utf8"
     },
     debug: false,

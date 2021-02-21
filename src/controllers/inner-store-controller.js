@@ -195,13 +195,13 @@ module.exports.checkCouponValidity = async (request, response) => {
 module.exports.checkServerWorks = async (request,reply) => {
     console.log('/endpoint/check check server hits')
     try {
-        return response.status(200).json({
+        return reply.status(200).json({
             success: true,
             error: false,
             message: 'successfully check',
         })
     } catch (err) {
-        return response.status(200).json({
+        return reply.status(200).json({
             success: false,
             error: true,
             message: 'Failed to check',

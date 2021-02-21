@@ -31,6 +31,10 @@ app.use(function (req, res, next) {
 
 // Routes
 app.use('/api', routes);
+app.get('/checkserver', (req, res) => {
+ console.log("/endpoint got a hit") 
+res.send('Hello World!')
+})
 
 // Server Listening Connection
 app.listen(config.server.port, (req, res) => {

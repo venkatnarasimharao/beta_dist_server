@@ -31,6 +31,7 @@ app.use(function (req, res, next) {
 
 // Routes
 app.use('/api', routes);
+console.log('server hits check')
 
 // Server Listening Connection
 app.listen(config.server.port, (req, res) => {

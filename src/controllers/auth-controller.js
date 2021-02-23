@@ -261,16 +261,13 @@ module.exports.forgotPassword = async (request, response) => {
 
     console.log("request body isss", request.body);
 
-    let testAccount = await nodemailer.createTestAccount();
-
     const transporter = nodemailer.createTransport({
-        // service: 'Gmail',
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false,
+        service: 'Gmail',
+        port: 465,
+        secure: true,
         auth: {
-            user: testAccount.user,
-            pass: testAccount.pass
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASSWORD
         }
     });
 
@@ -294,7 +291,7 @@ module.exports.forgotPassword = async (request, response) => {
     });
 
     const mailOptions = {
-        from: 'todosharebuzz4us@gmail.com',
+        from: process.env.MAIL_USER,
         to: `${request.body.email}`,
         subject: 'Reset password request mail',
         // text: `Hi ${findUser[0].name}, I think you might forgot your password. No problem, Please login with new Password :: ${updatePassword}`,
@@ -354,7 +351,6 @@ module.exports.emailVerifyOtp = async (request, response) => {
 
     console.log("request body isss", request.body);
 
-
     const findUser = await library.simpleselect(Users, '*', `email='${request.body.email}'`);
 
     console.log("Get user response", findUser);
@@ -368,16 +364,13 @@ module.exports.emailVerifyOtp = async (request, response) => {
         });
     }
 
-    let testAccount = await nodemailer.createTestAccount();
-
     const transporter = nodemailer.createTransport({
-        // service: 'Gmail',
-        host: "smtp.ethereal.email",
-        port: 587,
-        secure: false,
+        service: 'Gmail',
+        port: 465,
+        secure: true,
         auth: {
-            user: testAccount.user,
-            pass: testAccount.pass
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASSWORD
         }
     });
 
@@ -401,7 +394,7 @@ module.exports.emailVerifyOtp = async (request, response) => {
     // console.log(source);
 
     const mailOptions = {
-        from: 'todosharebuzz4us@gmail.com',
+        from: process.env.MAIL_USER,
         to: `${request.body.email}`,
         subject: 'Email verification request via OTP (One Time Password)',
         // text: `Hi ${request.body.username}, Please verify your email with otp code :: ${otpNumber}`,
@@ -412,7 +405,7 @@ module.exports.emailVerifyOtp = async (request, response) => {
     }
 
     try {
-        await transporter.sendMail(mailOptions, async function (err) {
+        await transporter.sendMail(mailOptions, async function (err, result) {
             if (err) {
                 console.log('Error while sent otp to mail', err);
                 return response.status(200).json({
@@ -422,7 +415,7 @@ module.exports.emailVerifyOtp = async (request, response) => {
                     data: null
                 });
             } else {
-                console.log('Otp sent to email successful', otpNumber);
+                console.log('Otp sent to email successful', result, otpNumber);
                 return response.status(200).json({
                     success: true,
                     error: false,

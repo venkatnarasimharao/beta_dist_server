@@ -83,22 +83,19 @@ module.exports.postCouponsCode = async (request, reply) => {
                 coupon_code: request.body.code
             })
 
-            // mail 
-            let testAccount = await nodemailer.createTestAccount();
-
+            // send coupon to user email 
             const transporter = nodemailer.createTransport({
-                // service: 'Gmail',
-                host: "smtp.ethereal.email",
-                port: 587,
-                secure: false,
+                service: 'Gmail',
+                port: 465,
+                secure: true,
                 auth: {
-                    user: testAccount.user,
-                    pass: testAccount.pass
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASSWORD
                 }
             });
             console.log(testAccount, 'ajsnd', transporter)
             const mailOptions = {
-                from: 'todosharebuzz4us@gmail.com',
+                from: process.env.MAIL_USER,
                 to: request.body.userid,
                 subject: 'Your Coupon Code',
                 html: `<p>Hi ${request.body.username}, Your Coupon Code is ${request.body.code}</p>`
@@ -135,6 +132,7 @@ module.exports.postCouponsCode = async (request, reply) => {
         })
     }
 }
+
 // check if coupon is valid or not
 module.exports.checkCouponValidity = async (request, response) => {
     console.log('request body issss', request.body);
@@ -193,15 +191,15 @@ module.exports.checkCouponValidity = async (request, response) => {
 
 
 module.exports.checkServerWorks = async (request,reply) => {
-    console.log('/endpoint/check check server hits')
+    console.log('check server hits')
     try {
-        return reply.status(200).json({
+        return response.status(200).json({
             success: true,
             error: false,
-            message: 'successfully check',
+            message: 'success to check',
         })
     } catch (err) {
-        return reply.status(200).json({
+        return response.status(200).json({
             success: false,
             error: true,
             message: 'Failed to check',

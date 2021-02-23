@@ -221,6 +221,8 @@ module.exports.signInWithGoogleFb = async (request, response) => {
     request.body.password = encrytPassword;
 
     console.log("Insert user payload issss", request.body);
+    
+    request.body.remember_token = null;
 
     await library.insertOrUpdate(request, Users, request.body).then(result => {
         console.log("Get response user signed in", result);

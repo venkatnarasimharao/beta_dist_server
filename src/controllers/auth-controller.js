@@ -151,7 +151,7 @@ module.exports.userLogin = async (request, response) => {
             id: findUser[0].id,
             login_time: moment().format('YYYY-MM-DD HH:mm:ss'),
             is_active: 1,
-            remember_token: null
+            remember_token: token
         }
 
         console.log('User login payload', loginPayload);
@@ -222,7 +222,7 @@ module.exports.signInWithGoogleFb = async (request, response) => {
 
     console.log("Insert user payload issss", request.body);
     
-    request.body.remember_token = null;
+    request.body.remember_token = request.body['remember_token'];
 
     await library.insertOrUpdate(request, Users, request.body).then(result => {
         console.log("Get response user signed in", result);
@@ -237,7 +237,7 @@ module.exports.signInWithGoogleFb = async (request, response) => {
             expiresIn: '1hr'
         });
 
-        request.body.remember_token = null;
+        request.body.remember_token = token;
 
         response.status(200).json({
             success: true,
@@ -594,7 +594,7 @@ module.exports.adminLogin = async (request, response) => {
             id: result[0].id,
             login_time: moment().format('YYYY-MM-DD HH:mm:ss'),
             is_active: 1,
-            remember_token: null
+            remember_token: token
         }
 
         console.log('Admin login payload', loginPayload);

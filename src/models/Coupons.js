@@ -48,12 +48,12 @@ class Coupons extends Model {
   //     };
   //   }
 
-  static modifiers = {
-    // Note that this modifier takes an argument.
-    onlyUserDetails(query, userEmail) {
-        query.where("email", userEmail);
-    }
-  };
+  // static modifiers = {
+  //   // Note that this modifier takes an argument.
+  //   onlyUserDetails(query, userEmail) {
+  //       query.where("email", userEmail);
+  //   }
+  // };
 
   static get jsonSchema() {
     return {

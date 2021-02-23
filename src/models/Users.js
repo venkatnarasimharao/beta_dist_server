@@ -28,7 +28,7 @@ class Users extends Model {
                 is_active: { type: ['integer', 'number', 'null'] },
                 confirmed: { type: ['integer', 'number', 'null'] },
                 confirmation_code: { type: ['string', 'null'] },
-                remember_token: { type: ['string', 'null'] },
+                remember_token: { type: ['string', 'null', null] },
                 role: { type: ['string', 'null'] },
                 points: { type: ['integer', 'number', 'null'] },
                 status: { type: ['integer', 'number', 'null'] },

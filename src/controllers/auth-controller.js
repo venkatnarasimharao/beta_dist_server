@@ -151,7 +151,7 @@ module.exports.userLogin = async (request, response) => {
             id: findUser[0].id,
             login_time: moment().format('YYYY-MM-DD HH:mm:ss'),
             is_active: 1,
-            remember_token: token
+            remember_token: null
         }
 
         console.log('User login payload', loginPayload);
@@ -235,7 +235,7 @@ module.exports.signInWithGoogleFb = async (request, response) => {
             expiresIn: '1hr'
         });
 
-        request.body.remember_token = token;
+        request.body.remember_token = null;
 
         response.status(200).json({
             success: true,
@@ -592,7 +592,7 @@ module.exports.adminLogin = async (request, response) => {
             id: result[0].id,
             login_time: moment().format('YYYY-MM-DD HH:mm:ss'),
             is_active: 1,
-            remember_token: token
+            remember_token: null
         }
 
         console.log('Admin login payload', loginPayload);

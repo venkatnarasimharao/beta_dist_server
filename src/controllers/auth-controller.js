@@ -442,8 +442,8 @@ module.exports.updateProfileInformation = async (request, response) => {
     console.log("request body isss", request.body);
 
     await library.updateWithWhere(request, Users, {
-        username: request.body.username
-    }, `userid=${request.body.user_id}`).then(async result => {
+        name: request.body.username
+    }, `id=${request.body.id}`).then(async result => {
 
         console.log('Get response of updateProfile', result);
 
@@ -468,7 +468,7 @@ module.exports.updateProfileInformation = async (request, response) => {
 module.exports.updatePasswordInformation = async (request, response) => {
     console.log("request body isss", request.body);
 
-    const findUser = await library.simpleselect(Users, '*', `userid=${request.body.user_id}`);
+    const findUser = await library.simpleselect(Users, '*', `id=${request.body.id}`);
 
     console.log("Get user login response", findUser);
 
@@ -513,7 +513,7 @@ module.exports.updatePasswordInformation = async (request, response) => {
 
             await library.updateWithWhere(request, Users, {
                 password: request.body.new_password
-            }, `userid=${request.body.user_id}`).then(async result => {
+            }, `id=${request.body.id}`).then(async result => {
 
                 console.log('Get response of updatePassword', result);
 

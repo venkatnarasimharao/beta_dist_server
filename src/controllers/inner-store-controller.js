@@ -125,6 +125,7 @@ module.exports.postCouponsCode = async (request, reply) => {
             })
         }
     } catch (err) {
+        console.log(err, 'error in coupons')
         return reply.status(200).json({
             success: false,
             statusCode: 500,

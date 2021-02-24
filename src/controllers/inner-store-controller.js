@@ -93,7 +93,6 @@ module.exports.postCouponsCode = async (request, reply) => {
                     pass: process.env.MAIL_PASSWORD
                 }
             });
-            console.log(testAccount, 'ajsnd', transporter)
             const mailOptions = {
                 from: process.env.MAIL_USER,
                 to: request.body.userid,

@@ -541,6 +541,8 @@ module.exports.userLogout = async (request, response) => {
 
     console.log("request payload issss", request.body);
 
+    request.body.id = Number(request.body.id);
+
     await library.insertOrUpdate(request, Users, request.body).then(async result => {
         return response.status(200).json({
             success: true,
@@ -634,6 +636,8 @@ module.exports.adminLogin = async (request, response) => {
 module.exports.adminLogout = async (request, response) => {
 
     console.log("request payload issss", request.body);
+
+    request.body.id = Number(request.body.id);
 
     await library.insertOrUpdate(request, Users, request.body).then(async result => {
         return response.status(200).json({

@@ -7,6 +7,7 @@ const nodemailer = require('nodemailer');
 const library = require('../libraries/userquery');
 const { build } = require('joi');
 
+// get coupons list
 module.exports.getCouponsList = async (request, reply) => {
     console.log(request.body, 'body for inner store')
     const getCopupon = couponsModel.query()
@@ -60,7 +61,7 @@ module.exports.getCouponsList = async (request, reply) => {
     })
 }
 
-// postCouponsCode
+// post Coupons Code
 module.exports.postCouponsCode = async (request, reply) => {
     try {
         let checkUserCouponsCount = null;
@@ -80,7 +81,8 @@ module.exports.postCouponsCode = async (request, reply) => {
             await CouponsUser.query().insert({
                 email: request.body.userid,
                 coupons_id: request.body.coupons_id,
-                coupon_code: request.body.code
+                coupon_code: request.body.code,
+                coupon_status: 0
             })
 
             // send coupon to user email 
@@ -158,7 +160,7 @@ module.exports.checkCouponValidity = async (request, response) => {
 
         const updateCoupon = {
             id: result[0]['id'],
-            coupon_status: 0
+            coupon_status: 1
         }
 
         await library.updateWithWhere(request, CouponsUser, updateCoupon, `id = ${result[0]['id']}`).then(async resp => {
@@ -188,8 +190,7 @@ module.exports.checkCouponValidity = async (request, response) => {
     });
 }
 
-
-
+// check if server is working or not
 module.exports.checkServerWorks = async (request,reply) => {
     console.log('check server hits')
     try {

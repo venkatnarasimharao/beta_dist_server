@@ -1,7 +1,7 @@
 const { Model } = require('objection')
-class Categories extends Model {
+class Faq extends Model {
     static get tableName() {
-        return 'categories';
+        return ' faqs';
     }
     static get idColumn() {
         return 'id'
@@ -11,16 +11,15 @@ class Categories extends Model {
             type: 'object',
             properties: {
                 id: { type: 'integer' },
-                slug: { type: 'string' },
-                title: { type: 'string' },
-                icon: { type: 'string' },
-                image: { type: 'string' },
-                is_active: { type: 'tinyint' },
+                faq_category_id: { type: 'integer' },
+                question: { type: 'string' },
+                answer: { type: 'string' },
+                like: { type: 'integer' },
+                dislike: { type: 'integer' },
                 created_at: { type: 'date' },
                 updated_at: { type: 'date' }
             }
         }
     }
 }
-
-module.exports = Categories
+module.exports = Faq

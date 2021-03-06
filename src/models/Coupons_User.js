@@ -12,7 +12,7 @@ class CouponsUser extends Model {
             properties: {
                 id: { type: 'integer' },
                 email: { type: 'string' },
-                coupons_id: { type: 'integer' }, // relation form coupon table
+                coupons_id: { type: 'integer' },
                 coupon_code: { type: 'string' },
                 coupon_status: { type: 'tinyint' }, // 1 - not used, 0 - used
                 created_at: { type: 'datetime' },

@@ -1,17 +1,15 @@
 // const Users = require('../models/user');
-const Users = require('../models/Users');
-const library = require('../libraries/userquery');
-const Otp_verification = require('../models/Otp_verification');
+const moment = require('moment');
 const Joi = require('joi');
 const validator = require('express-joi-validation').createValidator({});
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
+const library = require('../libraries/userquery');
 const cryptoRandomString = require('crypto-random-string');
-const moment = require('moment');
-const { request } = require('chai');
-const { response } = require('express');
-const { async } = require('crypto-random-string');
+const Users = require('../models/Users');
+const Otp_verification = require('../models/Otp_verification');
+const User_bank_details = require('../models/User_bank_details');
 
 // user sign up API
 module.exports.userSignup = async (request, response) => {
@@ -55,7 +53,7 @@ module.exports.userSignup = async (request, response) => {
         const encrytPassword = await library.encrypt(hashPassword, process.env.SECURITY_KEY);
         request.body.password = encrytPassword;
 
-        request.body.facebook_id  = null;
+        request.body.facebook_id = null;
         request.body.google_id = null;
         request.body.gender = null;
         request.body.dob = null;
@@ -221,7 +219,7 @@ module.exports.signInWithGoogleFb = async (request, response) => {
     request.body.password = encrytPassword;
 
     console.log("Insert user payload issss", request.body);
-    
+
     request.body.remember_token = request.body['remember_token'];
 
     await library.insertOrUpdate(request, Users, request.body).then(result => {
@@ -550,7 +548,7 @@ module.exports.userLogout = async (request, response) => {
             message: 'User logout successful',
             data: result
         });
-    }).catch(err => {
+    }).catch(() => {
         return response.status(200).json({
             success: false,
             error: true,
@@ -573,7 +571,7 @@ module.exports.adminLogin = async (request, response) => {
     await library.simpleselect(Users, '*', `email='${request.body.email}' AND password='${request.body.password}'`).then(async result => {
 
         console.log("Get admin login response", result);
-        
+
         if (!result || result.length == 0) {
             return response.status(200).json({
                 success: false,
@@ -646,7 +644,7 @@ module.exports.adminLogout = async (request, response) => {
             message: 'Admin logout successful',
             data: result
         });
-    }).catch(err => {
+    }).catch(() => {
         return response.status(200).json({
             success: false,
             error: true,
@@ -654,4 +652,159 @@ module.exports.adminLogout = async (request, response) => {
             data: null
         });
     });
+}
+
+// GET User bank details
+module.exports.getUserBankDetails = async (request, response) => {
+    console.log('request body isss', request.body);
+
+    let result = {};
+
+    try {
+        await library.simpleselect(User_bank_details, '*', `user_id=${request.body.id}`).then(async resp => {
+            console.log('Get user bank details', resp);
+            result = {
+                success: true,
+                error: false,
+                message: 'Get user bank details',
+                data: resp
+            }
+        }).catch(err => {
+            throw err;
+        });
+    } catch (error) {
+        console.log('Error while get user bank details', error);
+        result = {
+            success: false,
+            error: true,
+            message: 'Error while get user bank details',
+            data: null
+        }
+    }
+    return response.status(200).json(result);
+}
+
+// ADD User bank details
+module.exports.addUserBankDetails = async (request, response) => {
+    console.log('request body isss', request.body);
+
+    let result = {};
+
+    try {
+        await library.insertOrUpdate(request, User_bank_details, request.body).then(async resp => {
+            console.log('User bank details inserted response', resp);
+            result = {
+                success: true,
+                error: false,
+                message: 'User bank details updated successful',
+                data: resp
+            }
+        }).catch(err => {
+            throw err;
+        });
+    } catch (error) {
+        console.log('Error while update user bank details', error);
+        result = {
+            success: false,
+            error: true,
+            message: 'Error while update user bank details',
+            data: null
+        }
+    }
+    return response.status(200).json(result);
+}
+
+// GET User profile details
+module.exports.getUserProfileDetails = async (request, response) => {
+    console.log('request body isss', request.body);
+
+    let result = {};
+
+    try {
+        await library.simpleselect(Users, '*', `id=${request.body.id}`).then(async resp => {
+            console.log('Get user profile details', resp);
+            result = {
+                success: true,
+                error: false,
+                message: 'Get user profile details',
+                data: resp
+            }
+        }).catch(err => {
+            throw err;
+        });
+    } catch (error) {
+        console.log('Error while get user profile details', error);
+        result = {
+            success: false,
+            error: true,
+            message: 'Error while get user profile details',
+            data: null
+        }
+    }
+    return response.status(200).json(result);
+}
+
+// SEND MAIL BY USER TO ADMIN
+module.exports.contactAdminByEmail = async (request, response) => {
+
+    console.log("request body isss", request.body);
+
+    if (request.body.email !== process.env.MAIL_USER) {
+        return response.status(200).json({
+            success: false,
+            error: true,
+            message: 'Invalid email',
+            data: null
+        });
+    }
+
+    const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        port: 465,
+        secure: true,
+        auth: {
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASSWORD
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.MAIL_USER,
+        to: `${request.body.email}`,
+        subject: 'Issue Raised by a user to solve request',
+        html: `<h3>Request Mail - BACATA STORE</h3>
+            <p>Username : ${request.body.name}</p>
+            <p>Issue : ${request.body.issue}</p>
+            <p>Message : ${request.body.message}</p>`
+    }
+
+    try {
+        await transporter.sendMail(mailOptions, async function (err, result) {
+            if (err) {
+                console.log('Error while sent issue to mail', err);
+                return response.status(200).json({
+                    success: false,
+                    error: true,
+                    message: 'Error while sent issue to mail',
+                    data: null
+                });
+            } else {
+                console.log('Issue sent to email successful', result);
+                return response.status(200).json({
+                    success: true,
+                    error: false,
+                    message: 'Issue sent to email successful',
+                    data: null
+                });
+            }
+        });
+    } catch (error) {
+        console.log("Error at Try Catch API", error);
+        return response.status(200).json({
+            success: false,
+            error: true,
+            message: 'Error while sent issue to mail',
+            data: null
+        });
+    }
 }

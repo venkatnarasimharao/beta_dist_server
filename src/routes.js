@@ -8,6 +8,8 @@ const CategoriesController = require('./controllers/categories-controller')
 
 // inner store
 const InnerStore = require('./controllers/inner-store-controller')
+
+const InlineFile = require('./controllers/inline-file')
 // const Routes = [
 //     ...authCtrl
 // ];
@@ -34,5 +36,14 @@ router.post('/post/coupon/code', InnerStore.postCouponsCode);
 router.post('/check_coupon_validity', InnerStore.checkCouponValidity);
 // to check server working or not
 router.get('/endpoint/check', InnerStore.checkServerWorks);
+router.get('/faqpoints', InnerStore.faqdata);
+
+router.post('/get_user_bank_details', authCtrl.getUserBankDetails);
+router.post('/add_user_bank_details', authCtrl.addUserBankDetails);
+router.post('/get_user_profile', authCtrl.getUserProfileDetails);
+router.post('/send_mail_by_user', authCtrl.contactAdminByEmail);
+
+router.post('/file/{fileName}', InlineFile.getFile);
+router.post('/get/category/list', InnerStore.categoryInnerStore)
 
 module.exports = router;

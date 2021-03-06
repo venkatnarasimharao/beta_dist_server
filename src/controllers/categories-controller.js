@@ -5,6 +5,7 @@ const Categories =require('../models/Categories')
 const axios = require('axios');
 
 module.exports.getCategoriesList = async (request, reply) => {
+    const TotalCount = await StoresModel.query().clone().count('id').as('count')
     await StoresModel.query()
         .select()
         .limit(`${request.body.limit}`)
@@ -14,7 +15,8 @@ module.exports.getCategoriesList = async (request, reply) => {
                 success: true,
                 statusCode: 200,
                 message: 'Successfully fetching data',
-                data: result
+                data: result,
+                TotalCount: TotalCount && TotalCount.length ? TotalCount[0]['count(`id`)'] : 0
             })
         }).catch(err => {
             // console.log(err, 'error in fetch list')

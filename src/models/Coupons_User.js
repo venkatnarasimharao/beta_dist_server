@@ -6,6 +6,22 @@ class CouponsUser extends Model {
     static get idColumn() {
         return 'id'
     }
+
+    static get relationMappings() {
+        const Coupons = require("./Coupons");
+        return {
+            CouponRelation: {
+            relation: Model.HasOneRelation,
+            modelClass: Coupons,
+            join: {
+              from: "coupons_user.coupons_id",
+              to: "coupons.id",
+            },
+          }
+        };
+      }
+
+      
     static get jsonSchema() {
         return {
             type: 'object',

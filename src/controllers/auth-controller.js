@@ -439,9 +439,7 @@ module.exports.emailVerifyOtp = async (request, response) => {
 module.exports.updateProfileInformation = async (request, response) => {
     console.log("request body isss", request.body);
 
-    await library.updateWithWhere(request, Users, {
-        name: request.body.username
-    }, `id=${request.body.id}`).then(async result => {
+    await library.updateWithWhere(request, Users, request.body, `id=${request.body.id}`).then(async result => {
 
         console.log('Get response of updateProfile', result);
 
@@ -749,15 +747,6 @@ module.exports.contactAdminByEmail = async (request, response) => {
 
     console.log("request body isss", request.body);
 
-    if (request.body.email !== process.env.MAIL_USER) {
-        return response.status(200).json({
-            success: false,
-            error: true,
-            message: 'Invalid email',
-            data: null
-        });
-    }
-
     const transporter = nodemailer.createTransport({
         service: 'Gmail',
         port: 465,
@@ -770,10 +759,11 @@ module.exports.contactAdminByEmail = async (request, response) => {
 
     const mailOptions = {
         from: process.env.MAIL_USER,
-        to: `${request.body.email}`,
-        subject: 'Issue Raised by a user to solve request',
+        to: 'abacata51@gmail.com',
+        subject: 'Request Raised by a user to solve issue',
         html: `<h3>Request Mail - BACATA STORE</h3>
             <p>Username : ${request.body.name}</p>
+            <p>Email : ${request.body.email}</p>
             <p>Issue : ${request.body.issue}</p>
             <p>Message : ${request.body.message}</p>`
     }
@@ -804,6 +794,60 @@ module.exports.contactAdminByEmail = async (request, response) => {
             success: false,
             error: true,
             message: 'Error while sent issue to mail',
+            data: null
+        });
+    }
+}
+
+// INVITE USER BY EMAIL API
+module.exports.inviteUserByEmail = async (request, response) => {
+
+    console.log("request body isss", request.body);
+
+    const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        port: 465,
+        secure: true,
+        auth: {
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASSWORD
+        }
+    });
+
+    const mailOptions = {
+        from: process.env.MAIL_USER,
+        to: `${request.body.email}`,
+        subject: 'Inviting you via email from Bacata App',
+        html: `<h3>Hi User, here link to open Bacata online offline Webstore Application.</h3>
+            <p>Bacata Webstore URL : http://beta.bacata.in/</p>`
+    }
+
+    try {
+        await transporter.sendMail(mailOptions, async function (err, result) {
+            if (err) {
+                console.log('Error while invite user by email', err);
+                return response.status(200).json({
+                    success: false,
+                    error: true,
+                    message: 'Error while invite user by email',
+                    data: null
+                });
+            } else {
+                console.log('Invite sent to user successful', result);
+                return response.status(200).json({
+                    success: true,
+                    error: false,
+                    message: 'Invite sent to user successful',
+                    data: null
+                });
+            }
+        });
+    } catch (error) {
+        console.log("Error at Try Catch API", error);
+        return response.status(200).json({
+            success: false,
+            error: true,
+            message: 'Error while invite user by email',
             data: null
         });
     }

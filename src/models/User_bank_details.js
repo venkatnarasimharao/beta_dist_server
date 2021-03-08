@@ -13,9 +13,11 @@ class User_bank_details extends Model {
             properties: {
                 bank_id  : { type: ['integer', 'number', 'null'] },
                 bank_name: { type: ['string', 'null'] },
+                bank_holder: { type: ['string', 'null'] },
                 branch_name: { type: ['string', 'null'] },
                 account_no: { type: ['string', 'null'] },
                 ifsc_code: { type: ['string', 'null'] },
+                pan_card: { type: ['string', 'null'] },
                 user_id: { type: ['integer', 'number', 'null'] },
                 status: { type: ['integer', 'number', 'null'] },
                 created_at: { type: 'datetime' },

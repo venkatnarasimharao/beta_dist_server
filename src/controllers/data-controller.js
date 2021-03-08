@@ -4,7 +4,7 @@ const library = require('../libraries/userquery');
 const jwt = require('jsonwebtoken');
 const https = require('https');
 const fetch = require('node-fetch');
-
+const Sliders = require('../models/Sliders');
 
 // GET all strores data
 module.exports.getAllStores = (req, res, next) => {
@@ -50,4 +50,26 @@ module.exports.getAllStores = (req, res, next) => {
     }).on("error", (error) => {
         console.error(error.message);
     });
+}
+
+
+//shop CategoriesList List
+module.exports.sliderList = async (request, response) => {
+    await Sliders.query()
+        .then(result => {
+            return response.status(200).json({
+                success: true,
+                statusCode: 200,
+                message: 'Successfully fetching data',
+                data: result
+            })
+        }).catch(err => {
+            // console.log(err, 'error in fetch list')
+            return response.status(500).json({
+                success: false,
+                statusCode: 500,
+                message: 'Unable to fetch data',
+                data: null
+            })
+        })
 }

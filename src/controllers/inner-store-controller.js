@@ -6,7 +6,8 @@ const { raw } = require("objection");
 const nodemailer = require("nodemailer");
 const library = require("../libraries/userquery");
 const { build } = require("joi");
-const faq = require('../models/Faq')
+const faq = require("../models/Faq");
+const { async } = require("crypto-random-string");
 
 // get coupons list
 module.exports.getCouponsList = async (request, reply) => {
@@ -257,24 +258,88 @@ module.exports.categoryInnerStore = async (request, reply) => {
   }
 };
 
-
 module.exports.faqdata = async (request, reply) => {
-    await faq.query()
-        .select()
-        .then(result => {
-            return reply.status(200).json({
-                success: true,
-                statusCode: 200,
-                message: 'Successfully fetching data',
-                data: result
-            })
-        }).catch(err => {
-            // console.log(err, 'error in fetch list')
-            return reply.status(500).json({
-                success: false,
-                statusCode: 500,
-                message: 'Unable to fetch data',
-                data: null
-            })
-        })
+  await faq
+    .query()
+    .select()
+    .then((result) => {
+      return reply.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: "Successfully fetching data",
+        data: result,
+      });
+    })
+    .catch((err) => {
+      // console.log(err, 'error in fetch list')
+      return reply.status(500).json({
+        success: false,
+        statusCode: 500,
+        message: "Unable to fetch data",
+        data: null,
+      });
+    });
+};
+
+module.exports.getLastFiveTransactions = async (request, reply) => {
+  const LastFive = await CouponsUser
+    .query()
+    .alias("c")
+    .select("c.updated_at", "CouponRelation:st.title")
+    .leftJoinRelated(`CouponRelation.stores as st`)
+    .where("c.email", request.body.email)
+    .limit(5)
+    .orderBy("updated_at", "desc");
+
+  await CouponsUser
+    .query()
+    .alias("c")
+    .select("c.updated_at", "CouponRelation:st.title")
+    .leftJoinRelated(`CouponRelation.stores as st`)
+    .where("c.email", request.body.email)
+    .orderBy("updated_at", "desc")
+    .then((result) => {
+      return reply.status(200).json({
+        success: true,
+        statusCode: 200,
+        message: "Successfully fetching data",
+        data: result,
+        LastFive: LastFive,
+      });
+    })
+    .catch((err) => {
+      // console.log(err, 'error in fetch list')
+      return reply.status(500).json({
+        success: false,
+        statusCode: 500,
+        message: "Unable to fetch data",
+        data: null,
+      });
+    });
+};
+
+
+module.exports.getAdminCouponsCount = async (request,reply) => {
+  const totalCount = await CouponsUser.query().count('*').as('totalCount')
+  await CouponsUser.query().count('*')
+  .as('redeemCount')
+  .where('coupon_status', 1)
+  .then(([result]) => {
+    return reply.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: "Successfully fetching data",
+      data: result ? result['count(*)'] : 0,
+      totalCount: totalCount && totalCount.length ? totalCount[0]['count(*)'] : 0,
+    });
+  })
+  .catch((err) => {
+    // console.log(err, 'error in fetch list')
+    return reply.status(500).json({
+      success: false,
+      statusCode: 500,
+      message: "Unable to fetch data",
+      data: null,
+    });
+  });
 }

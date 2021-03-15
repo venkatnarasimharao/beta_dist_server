@@ -46,6 +46,7 @@ router.post('/get/category/list', InnerStore.categoryInnerStore);
 // invite us by email api path
 router.post('/invite_us_by_email', authCtrl.inviteUserByEmail);
 router.get('/get/sliders', dataCtrl.sliderList);
+router.get('/get/socials', dataCtrl.socialList);
 
 router.post('/get/last/five/transactions', InnerStore.getLastFiveTransactions);
 router.get('/get/admin/coupon/counts', InnerStore.getAdminCouponsCount);
